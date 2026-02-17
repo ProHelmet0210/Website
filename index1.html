@@ -1,24 +1,544 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Thank You</title>
+  <meta charset="utf-8" />
+  <title>ProHelmet — Smart Helmet Sanitizing Kiosk</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="ProHelmet is a self-service helmet sanitizing kiosk for public locations. Fast, hygienic, automated, and operator-ready with dashboard and reporting." />
+
   <style>
-    body {
-      margin: 0;
-      background-color: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    :root{
+      --bg:#070a10;
+      --panel:#0f1420;
+      --panel2:#0b0f18;
+      --text:#e9eef7;
+      --muted:#a9b4c6;
+      --line:rgba(255,255,255,.12);
+      --accent:#7cc5ff;
+      --ok:#22c55e;
+      --wrap:980px;
+      --navH:58px;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius:18px;
     }
-    img {
-      max-width: 100%;
-      height: auto;
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1100px 680px at 50% 10%, rgba(45,76,140,.22), transparent 60%),
+        radial-gradient(700px 450px at 20% 80%, rgba(0,200,255,.10), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height:1.55;
+      -webkit-text-size-adjust:100%;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{max-width:var(--wrap); margin:0 auto; padding:18px 14px 52px}
+
+    /* Header */
+    header{
+      padding:18px 0 10px;
+      text-align:center;
+    }
+    header img{
+      width:min(520px, 92%);
+      height:auto;
+      display:inline-block;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,.55));
+    }
+
+    .hero{
+      margin:14px auto 0;
+      padding:18px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+    }
+    .hero-top{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+      font-weight:700;
+      font-size:13px;
+    }
+    .kicker .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(34,197,94,.12);
+    }
+
+    h1{
+      margin:12px 0 8px;
+      font-size: clamp(26px, 3.2vw, 38px);
+      letter-spacing:.2px;
+      line-height:1.15;
+    }
+    .lead{
+      margin:0;
+      color:var(--muted);
+      font-size: clamp(14px, 1.7vw, 16px);
+      max-width: 70ch;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+    .stat{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background: rgba(255,255,255,.04);
+      padding:12px;
+    }
+    .stat .t{
+      font-weight:900;
+      font-size:15px;
+      margin:0 0 6px;
+    }
+    .stat .d{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.4;
+    }
+
+    /* Sticky nav */
+    .nav{
+      position:sticky; top:0; z-index:10;
+      background:rgba(7,10,16,.92);
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:saturate(1.2) blur(8px);
+    }
+    .nav-inner{
+      max-width:var(--wrap);
+      margin:0 auto;
+      min-height:var(--navH);
+      padding:8px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .menu-btn{
+      display:none;
+      background:rgba(255,255,255,.04);
+      color:var(--accent);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:16px;
+      cursor:pointer;
+      font-weight:800;
+    }
+    .menu-btn:focus{outline:2px solid var(--accent); outline-offset:2px}
+
+    .links{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .nav a{
+      color:var(--accent);
+      text-decoration:none;
+      padding:8px 10px;
+      border-radius:12px;
+      font-weight:800;
+      font-size:14px;
+    }
+    .nav a:hover,.nav a:focus{
+      background:rgba(255,255,255,.05);
+      text-decoration:underline;
+      text-underline-offset:3px;
+    }
+
+    section{
+      scroll-margin-top: calc(var(--navH) + 10px);
+      padding:26px 0;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    h2{
+      margin:0 0 10px;
+      font-size: clamp(20px, 2.8vw, 28px);
+      letter-spacing:.2px;
+    }
+    .subhead{
+      margin:0 0 14px;
+      color:var(--muted);
+      max-width: 80ch;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+    }
+    .card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background: rgba(255,255,255,.04);
+      padding:14px;
+    }
+    .card h3{
+      margin:0 0 8px;
+      font-size:16px;
+      font-weight:900;
+    }
+    .card p, .card li{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .card ul{margin:8px 0 0 18px; padding:0}
+    .card li{margin:6px 0}
+
+    .list{
+      margin:10px 0 0 18px;
+      padding:0;
+    }
+    .list li{margin:8px 0; color:var(--muted)}
+
+    .cta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      text-decoration:none;
+      font-weight:900;
+    }
+    .btn:hover{opacity:.92}
+    .btn.secondary{
+      background: transparent;
+      color: var(--accent);
+    }
+
+    footer{
+      text-align:center;
+      color:rgba(233,238,247,.55);
+      padding:24px 0 6px;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+
+    /* Mobile */
+    @media (max-width: 860px){
+      .hero-grid{grid-template-columns:1fr}
+      .cards{grid-template-columns:1fr}
+    }
+    @media (max-width: 720px){
+      :root{ --navH:54px; }
+      .nav-inner{justify-content:space-between}
+      .menu-btn{display:inline-flex; align-items:center; gap:8px}
+      .links{
+        display:none;
+        flex-direction:column;
+        width:100%;
+        padding:8px 0 4px;
+        align-items:flex-start;
+      }
+      .nav.open .links{display:flex}
+      .nav a{width:100%}
     }
   </style>
 </head>
+
 <body>
-  <img src="Thankyou1.png" alt="Thank You">
+
+  <div class="wrap">
+    <header>
+      <!-- You said the repo has ProHelmet3.png -->
+      <img src="ProHelmet3.png" alt="ProHelmet" />
+    </header>
+
+    <div class="hero" aria-label="ProHelmet overview">
+      <div class="hero-top">
+        <div class="kicker"><span class="dot"></span> Self-service • Public-ready • Operator dashboard</div>
+      </div>
+
+      <h1>Hygienic helmet sanitizing — on demand.</h1>
+      <p class="lead">
+        ProHelmet is a smart kiosk that helps riders keep helmets fresh, comfortable, and hygienic — without staff intervention.
+        Built for high-footfall locations and designed to earn trust at first glance.
+      </p>
+
+      <div class="hero-grid" role="list">
+        <div class="stat" role="listitem">
+          <p class="t">Designed for public spaces</p>
+          <p class="d">Clear user flow, quick cycle, and consistent experience.</p>
+        </div>
+        <div class="stat" role="listitem">
+          <p class="t">Operator-ready</p>
+          <p class="d">Live dashboard + daily reporting for business owners.</p>
+        </div>
+        <div class="stat" role="listitem">
+          <p class="t">Built for scale</p>
+          <p class="d">Franchise-grade reliability, serviceability, and SOP alignment.</p>
+        </div>
+      </div>
+
+      <div class="cta">
+        <a class="btn" href="#franchise">Franchise / Partner</a>
+        <a class="btn secondary" href="#contact">Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sticky / collapsible nav -->
+  <nav class="nav" id="topnav" aria-label="Sections">
+    <div class="nav-inner">
+      <button class="menu-btn" aria-controls="navlinks" aria-expanded="false" aria-label="Toggle menu">☰ Menu</button>
+      <div class="links" id="navlinks">
+        <a href="#why">Why ProHelmet</a>
+        <a href="#how">How It Works</a>
+        <a href="#for">Where It Fits</a>
+        <a href="#franchise">Franchise</a>
+        <a href="#policies">Policies</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+
+    <!-- WHY -->
+    <section id="why">
+      <h2>Why ProHelmet</h2>
+      <p class="subhead">
+        Helmets are worn daily, but rarely cleaned properly. Over time they can trap sweat and odour — and may contribute to discomfort and irritation.
+        ProHelmet makes helmet hygiene effortless in public spaces.
+      </p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Comfort & freshness</h3>
+          <ul>
+            <li>Reduces unpleasant odour buildup</li>
+            <li>Helps maintain a fresher feel</li>
+            <li>More comfortable daily use</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Hygiene focus</h3>
+          <ul>
+            <li>Designed for hygienic sanitizing cycles</li>
+            <li>Helps reduce contamination concerns</li>
+            <li>Encourages consistent helmet hygiene</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Simple, self-service</h3>
+          <ul>
+            <li>Easy, guided flow</li>
+            <li>Fast cycle built for footfall</li>
+            <li>No staff needed</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW -->
+    <section id="how">
+      <h2>How It Works</h2>
+      <p class="subhead">A simple, predictable process — designed for trust and repeat usage.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>1) Place helmet</h3>
+          <p>Insert the helmet and close the chamber. The kiosk detects placement and starts the guided flow.</p>
+        </div>
+        <div class="card">
+          <h3>2) Sanitizing cycle</h3>
+          <p>Automated stages (example: UVC → fog → air dry) run in a controlled sequence.</p>
+        </div>
+        <div class="card">
+          <h3>3) Collect & go</h3>
+          <p>When complete, remove the helmet and continue your ride with confidence.</p>
+        </div>
+      </div>
+
+      <ul class="list">
+        <li>Professional user experience designed to avoid confusion and build confidence.</li>
+        <li>Operator dashboard + reporting designed for business visibility.</li>
+      </ul>
+    </section>
+
+    <!-- WHERE -->
+    <section id="for">
+      <h2>Where ProHelmet Fits</h2>
+      <p class="subhead">High-footfall locations where riders naturally stop.</p>
+      <div class="cards">
+        <div class="card">
+          <h3>Retail & malls</h3>
+          <p>Food courts, entrances, parking zones, and kiosks.</p>
+        </div>
+        <div class="card">
+          <h3>Campuses & offices</h3>
+          <p>Corporate parks, universities, and institutional parking.</p>
+        </div>
+        <div class="card">
+          <h3>Transit & hubs</h3>
+          <p>Metro areas, transport stands, and busy commuter points.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FRANCHISE -->
+    <section id="franchise">
+      <h2>Franchise / Partner Model</h2>
+      <p class="subhead">
+        ProHelmet is built to operate reliably at scale — with a clean user experience and business-grade reporting.
+        For partner onboarding, pricing and deployment details are shared directly.
+      </p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Operator visibility</h3>
+          <ul>
+            <li>Dashboard view for cycles and health</li>
+            <li>Daily EOD reporting support</li>
+            <li>Service/refill workflow alignment</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Designed for uptime</h3>
+          <ul>
+            <li>Clear user flow reduces failed sessions</li>
+            <li>Controls-first approach (hardware logic stays in controller)</li>
+            <li>Supportable structure for multiple kiosks</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Next steps</h3>
+          <ul>
+            <li>Location assessment</li>
+            <li>Commercial proposal</li>
+            <li>Deployment & SOP handover</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta">
+        <a class="btn" href="tel:+919849080443">Call: 9849080443</a>
+        <a class="btn secondary" href="mailto:prohelmet.protoptye@gmail.com">Email: prohelmet.protoptye@gmail.com</a>
+      </div>
+    </section>
+
+    <!-- POLICIES -->
+    <section id="policies">
+      <h2>Policies</h2>
+      <p class="subhead">Simple, direct, and designed for customer trust.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Privacy</h3>
+          <p>
+            We do not collect unnecessary personal data. Payments are processed by Razorpay and we do not store card/bank details.
+            For support, contact us using the details below.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Terms</h3>
+          <ul>
+            <li>Use the kiosk as intended. Do not tamper with hardware.</li>
+            <li>Service is provided as-is; we handle helmets with care.</li>
+            <li>Pre-existing damage and wear remain the user’s responsibility.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Refunds</h3>
+          <ul>
+            <li>If charged but the cycle does not start due to a technical issue, contact support with the payment reference.</li>
+            <li>Refunds (if applicable) are returned via the original payment method.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <h2>Contact</h2>
+      <p class="subhead">Support and partnerships.</p>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Phone</h3>
+          <p><a href="tel:+919849080443" style="color:var(--accent); font-weight:900; text-decoration:none;">+91 98490 80443</a></p>
+        </div>
+        <div class="card">
+          <h3>Email</h3>
+          <p><a href="mailto:prohelmet.protoptye@gmail.com" style="color:var(--accent); font-weight:900; text-decoration:none;">prohelmet.protoptye@gmail.com</a></p>
+        </div>
+        <div class="card">
+          <h3>WhatsApp</h3>
+          <p><a href="https://wa.me/917207400693" target="_blank" rel="noopener" style="color:var(--accent); font-weight:900; text-decoration:none;">+91 72074 00693</a></p>
+        </div>
+      </div>
+    </section>
+
+    <footer>© <span id="y"></span> ProHelmet. All rights reserved.</footer>
+  </div>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    const nav = document.getElementById('topnav');
+    const btn = nav.querySelector('.menu-btn');
+    const links = document.getElementById('navlinks');
+
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      nav.classList.toggle('open', !open);
+    });
+
+    links.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') {
+        btn.setAttribute('aria-expanded','false');
+        nav.classList.remove('open');
+      }
+    });
+  </script>
 </body>
 </html>
