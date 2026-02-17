@@ -89,13 +89,18 @@
     }
 
 .hero-media{
-  margin-top:20px;
-  border-radius:16px;
-  overflow:hidden;
-  background:#000;
+  max-width: var(--wrap);
+  margin: 0 auto 30px auto;
 }
 
-.hero-media img{
+.hero-media-inner{
+  width:100%;
+  background:#000;
+  border-radius:20px;
+  overflow:hidden;
+}
+
+.hero-media-inner img{
   width:100%;
   height:auto;
   display:block;
@@ -286,9 +291,11 @@
         Designed for public locations with a clean, guided user experience.
       </p>
 
-      <div class="hero-media" aria-label="ProHelmet demonstration">
-        <img src="prohelmet.gif" alt="ProHelmet kiosk demonstration" />
-      </div>
+<div class="hero-media">
+  <div class="hero-media-inner">
+    <img src="prohelmet.gif" alt="ProHelmet kiosk demonstration">
+  </div>
+</div>
 
       <div class="cta">
         <a class="btn" href="#how">How to Use</a>
